@@ -62,9 +62,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_CAPS,   KC_F5,   KC_F6,   KC_F7,   KC_F8,  KC_INS,                      KC_HOME, KC_PGDN, KC_PGUP,  KC_END, XXXXXXX, KC_RALT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX,   KC_F9,  KC_F10,  KC_F11,  KC_F12, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
+        MO(4),   KC_F9,  KC_F10,  KC_F11,  KC_F12, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            KC_ESC, _______,  KC_SPC,     KC_ENT, _______, KC_RSFT
+                                      //`--------------------------'  `--------------------------'
+  ),
+
+  [4] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      RGB_M_P, RGB_M_B, RGB_M_R,RGB_M_SW,RGB_M_SN, RGB_M_K,                      BL_STEP, BL_BRTG, XXXXXXX, XXXXXXX, XXXXXXX,   RESET,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      RGB_M_T, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_M_X,                        BL_ON,  BL_INC, XXXXXXX, KC_VOLU, KC_BRIU, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      _______, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_G,                       BL_OFF,  BL_DEC, XXXXXXX, KC_VOLD, KC_BRID, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                         RGB_RMOD, RGB_MOD, RGB_TOG,    BL_TOGG, XXXXXXX, XXXXXXX
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -81,6 +93,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 #define L_LOWER 2
 #define L_RAISE 4
 #define L_ADJUST 8
+#define L_LED 16
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
@@ -99,6 +112,16 @@ void oled_render_layer_state(void) {
         case L_ADJUST|L_RAISE:
         case L_ADJUST|L_LOWER|L_RAISE:
             oled_write_ln_P(PSTR("Adjust"), false);
+            break;
+        case L_LED:
+        case L_LED|L_LOWER:
+        case L_LED|L_RAISE:
+        case L_LED|L_ADJUST:
+        case L_LED|L_LOWER|L_RAISE:
+        case L_LED|L_LOWER|L_ADJUST:
+        case L_LED|L_RAISE|L_ADJUST:
+        case L_LED|L_LOWER|L_RAISE|L_ADJUST:
+            oled_write_ln_P(PSTR("LED"), false);
             break;
     }
 }
