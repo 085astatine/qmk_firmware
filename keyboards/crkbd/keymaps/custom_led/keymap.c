@@ -18,6 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+enum custom_keycordes {
+  QWERTY = SAFE_RANGE,
+  RGBRST,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -72,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       RGB_M_P, RGB_M_B, RGB_M_R,RGB_M_SW,RGB_M_SN, RGB_M_K,                      BL_STEP, BL_BRTG, XXXXXXX, XXXXXXX, XXXXXXX,   RESET,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_M_T, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_M_X,                        BL_ON,  BL_INC, XXXXXXX, KC_VOLU, KC_BRIU, XXXXXXX,
+      RGB_M_T, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_M_X,                        BL_ON,  BL_INC, XXXXXXX, KC_VOLU, KC_BRIU,  RGBRST,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_G,                       BL_OFF,  BL_DEC, XXXXXXX, KC_VOLD, KC_BRID, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -191,6 +196,16 @@ void oled_task_user(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     set_keylog(keycode, record);
+  }
+  switch (keycode) {
+    case RGBRST:
+      #ifdef RGBLIGHT_ENABLE
+        if (record->event.pressed) {
+          eeconfig_update_rgblight_default();
+          rgblight_enable();
+        }
+      #endif  // RGBLIGHT_ENABLE
+      break;
   }
   return true;
 }
