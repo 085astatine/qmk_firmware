@@ -19,13 +19,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+enum custom_layer {
+  L_BASE,
+  L_LOWER,
+  L_RAISE,
+  L_ADJUST,
+  L_LED,
+};
+
 enum custom_keycordes {
   QWERTY = SAFE_RANGE,
+  LOWER,
+  RAISE,
   RGBRST,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [0] = LAYOUT_split_3x6_3(
+  [L_BASE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -33,12 +43,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_LGUI,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_ESC,   MO(1),  KC_SPC,     KC_ENT,   MO(2), KC_RSFT
+                                           KC_ESC,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_RSFT
                                       //`--------------------------'  `--------------------------'
 
   ),
 
-  [1] = LAYOUT_split_3x6_3(
+  [L_LOWER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_ESC, KC_MINS, KC_PLUS,  KC_EQL, KC_UNDS, KC_PERC,                       KC_GRV, KC_TILD, KC_EXLM, KC_QUES, KC_ASTR,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -46,11 +56,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_ESC, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RSFT
+                                           KC_ESC,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_RSFT
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [2] = LAYOUT_split_3x6_3(
+  [L_RAISE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_ESC, KC_BSLS, KC_SLSH, KC_COMM,  KC_DOT, KC_PIPE,                      KC_MINS, KC_UNDS, KC_HASH,  KC_DLR, KC_CIRC,  KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -58,29 +68,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,   KC_LT,   KC_GT, KC_LCBR, KC_RCBR, KC_DQUO,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_ESC,   MO(3),  KC_SPC,     KC_ENT, _______, KC_RSFT
+                                           KC_ESC,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_RSFT
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [3] = LAYOUT_split_3x6_3(
+  [L_ADJUST] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       XXXXXXX,   KC_F1,   KC_F2,   KC_F3,   KC_F4, KC_PSCR,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   RESET,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_CAPS,   KC_F5,   KC_F6,   KC_F7,   KC_F8,  KC_INS,                      KC_HOME, KC_PGDN, KC_PGUP,  KC_END, XXXXXXX, KC_RALT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        MO(4),   KC_F9,  KC_F10,  KC_F11,  KC_F12, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
+    MO(L_LED),   KC_F9,  KC_F10,  KC_F11,  KC_F12, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_ESC, _______,  KC_SPC,     KC_ENT, _______, KC_RSFT
+                                           KC_ESC,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_RSFT
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [4] = LAYOUT_split_3x6_3(
+  [L_LED] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       RGB_M_P, RGB_M_B, RGB_M_R,RGB_M_SW,RGB_M_SN, RGB_M_K,                      BL_STEP, BL_BRTG, XXXXXXX, XXXXXXX, XXXXXXX,   RESET,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_M_T, RGB_HUI, RGB_SAI, RGB_VAI, RGB_SPI, RGB_M_X,                        BL_ON,  BL_INC, XXXXXXX, KC_VOLU, KC_BRIU,  RGBRST,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______, RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_G,                       BL_OFF,  BL_DEC, XXXXXXX, KC_VOLD, KC_BRID, XXXXXXX,
+    MO(L_LED), RGB_HUD, RGB_SAD, RGB_VAD, RGB_SPD, RGB_M_G,                       BL_OFF,  BL_DEC, XXXXXXX, KC_VOLD, KC_BRID, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          RGB_RMOD, RGB_MOD, RGB_TOG,    BL_TOGG, XXXXXXX, XXXXXXX
                                       //`--------------------------'  `--------------------------'
@@ -95,41 +105,19 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   return rotation;
 }
 
-#define L_BASE 0
-#define L_LOWER 2
-#define L_RAISE 4
-#define L_ADJUST 8
-#define L_LED 16
-
 void oled_render_layer_state(void) {
-    oled_write_P(PSTR("Layer: "), false);
-    switch (layer_state) {
-        case L_BASE:
-            oled_write_ln_P(PSTR("Default"), false);
-            break;
-        case L_LOWER:
-            oled_write_ln_P(PSTR("Lower"), false);
-            break;
-        case L_RAISE:
-            oled_write_ln_P(PSTR("Raise"), false);
-            break;
-        case L_ADJUST:
-        case L_ADJUST|L_LOWER:
-        case L_ADJUST|L_RAISE:
-        case L_ADJUST|L_LOWER|L_RAISE:
-            oled_write_ln_P(PSTR("Adjust"), false);
-            break;
-        case L_LED:
-        case L_LED|L_LOWER:
-        case L_LED|L_RAISE:
-        case L_LED|L_ADJUST:
-        case L_LED|L_LOWER|L_RAISE:
-        case L_LED|L_LOWER|L_ADJUST:
-        case L_LED|L_RAISE|L_ADJUST:
-        case L_LED|L_LOWER|L_RAISE|L_ADJUST:
-            oled_write_ln_P(PSTR("LED"), false);
-            break;
-    }
+  oled_write_P(PSTR("Layer: "), false);
+  if (layer_state & (0x01 << L_LED)) {
+    oled_write_ln_P(PSTR("LED"), false);
+  } else if (layer_state & (0x01 << L_ADJUST)) {
+    oled_write_ln_P(PSTR("Adjust"), false);
+  } else if (layer_state & (0x01 << L_RAISE)) {
+    oled_write_ln_P(PSTR("Raise"), false);
+  } else if (layer_state & (0x01 << L_LOWER)) {
+    oled_write_ln_P(PSTR("Lower"), false);
+  } else {
+    oled_write_ln_P(PSTR("Base"), false);
+  }
 }
 
 
@@ -199,6 +187,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     set_keylog(keycode, record);
   }
   switch (keycode) {
+    case LOWER:
+      if (record->event.pressed) {
+        layer_on(L_LOWER);
+        update_tri_layer(L_LOWER, L_RAISE, L_ADJUST);
+      } else {
+        layer_off(L_LOWER);
+        update_tri_layer(L_LOWER, L_RAISE, L_ADJUST);
+      }
+      return false;
+    case RAISE:
+      if (record->event.pressed) {
+        layer_on(L_RAISE);
+        update_tri_layer(L_LOWER, L_RAISE, L_ADJUST);
+      } else {
+        layer_off(L_RAISE);
+        update_tri_layer(L_LOWER, L_RAISE, L_ADJUST);
+      }
+      return false;
     case RGBRST:
       #ifdef RGBLIGHT_ENABLE
         if (record->event.pressed) {
